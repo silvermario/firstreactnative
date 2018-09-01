@@ -1,5 +1,5 @@
 import React, {Component, PureComponent} from 'react';
-import {StyleSheet, Text, View, ScrollView, TextInput} from 'react-native';
+import {StyleSheet, Text, View, ScrollView, TextInput, AsyncStorage} from 'react-native';
 
 class Note extends Component {
     render() {
@@ -14,6 +14,9 @@ class Note extends Component {
     }
 }
 
+
+const textKey = 'devmeeting:text';
+
 export default class App extends PureComponent {
 
     state = {
@@ -23,6 +26,12 @@ export default class App extends PureComponent {
             content: `Content number ${i}. It's a bit longer than title. It's even long enough to force a line break`,
         })),
     };
+
+    componentWillMount() {
+        AsyncStorage.getItem(textKey).then(text => {
+            this.setState( state => ({items: JSON.parse(text)}));
+        });
+      }
 
 
 
@@ -47,13 +56,19 @@ export default class App extends PureComponent {
         );
     }
 
-    submit = () =>
-      this.setState(state => ({
-        items: state.items.concat({
-          title: new Date().toGMTString(),
-          content: state.value,
-        }),
-      }));
+    submit = () => {
+        this.setState(state => ({
+            items: state.items.concat({
+                title: new Date().toGMTString(),
+                content: state.value,
+            }),
+            value: '',
+        }));
+
+        console.log(this.state.items);
+        AsyncStorage.setItem(textKey, JSON.stringify(this.state.items));
+
+    }
 }
 
 const styles = StyleSheet.create({

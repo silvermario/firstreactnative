@@ -1,5 +1,5 @@
-import React, {Component} from 'react';
-import {StyleSheet, Text, View, ScrollView} from 'react-native';
+import React, {Component, PureComponent} from 'react';
+import {StyleSheet, Text, View, ScrollView, TextInput} from 'react-native';
 
 class Note extends Component {
     render() {
@@ -14,29 +14,55 @@ class Note extends Component {
     }
 }
 
-export default class App extends Component {
+export default class App extends PureComponent {
 
     state = {
+        value: '',
         items: new Array(20).fill(0).map((a, i) => i).map(i => ({
             title: `Note number ${i}`,
             content: `Content number ${i}. It's a bit longer than title. It's even long enough to force a line break`,
         })),
     };
 
+
+
     render() {
         return (
             <View style={styles.container}>
+                <View style={styles.form}>
+                    <TextInput
+                        placeholder="Enter text"
+                        returnKeyType="done"
+                        value={this.state.value}
+                        onSubmitEditing={this.submit}
+                    />
+                </View>
                 <ScrollView>
                     {this.state.items.map(({title, content}) => (
-                        <Note style={styles.item} key={title} title={title} content={content}></Note>
+                        <Note key={title} title={title} content={content}></Note>
                     ))}
                 </ScrollView>
             </View>
         );
     }
+
+    submit = () =>
+      this.setState(state => ({
+        items: state.items.concat({
+          title: new Date().getTime(),
+          content: 'TEXT_SUBMIT',
+        }),
+      }));
 }
 
 const styles = StyleSheet.create({
+    form: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#ecf0f1',
+        paddingTop: 20,
+    },
     container: {
         flex: 1,
         backgroundColor: '#fff',

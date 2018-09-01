@@ -1,14 +1,26 @@
 import React from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, Text, View, ScrollView} from 'react-native';
 
 export default class App extends React.Component {
+
+    state = {
+        items: new Array(20).fill(0).map((a, i) => i).map(i => ({
+            title: `Note number ${i}`,
+            content: `Content number ${i}. It's a bit longer than title. It's even long enough to force a line break`,
+        })),
+    };
+
     render() {
         return (
             <View style={styles.container}>
-                <Text style={styles.paragraph}>
-                    <Text style={styles.title}>First Note!</Text>
-                    <Text>Content of the first note. Yes, this is it.</Text>
-                </Text>
+                <ScrollView>
+                    {this.state.items.map(({title, content}) => (
+                        <Text key={title} style={styles.paragraph}>
+                            <Text style={styles.title}>{title}</Text>
+                            <Text>{content}</Text>
+                        </Text>
+                    ))}
+                </ScrollView>
             </View>
         );
     }

@@ -18,7 +18,7 @@ export default class App extends PureComponent {
 
     state = {
         value: '',
-        items: new Array(20).fill(0).map((a, i) => i).map(i => ({
+        items: new Array(3).fill(0).map((a, i) => i).map(i => ({
             title: `Note number ${i}`,
             content: `Content number ${i}. It's a bit longer than title. It's even long enough to force a line break`,
         })),
@@ -34,6 +34,7 @@ export default class App extends PureComponent {
                         placeholder="Enter text"
                         returnKeyType="done"
                         value={this.state.value}
+                        onChangeText={(value) => this.setState({value})}
                         onSubmitEditing={this.submit}
                     />
                 </View>
@@ -49,8 +50,8 @@ export default class App extends PureComponent {
     submit = () =>
       this.setState(state => ({
         items: state.items.concat({
-          title: new Date().getTime(),
-          content: 'TEXT_SUBMIT',
+          title: new Date().toGMTString(),
+          content: state.value,
         }),
       }));
 }
